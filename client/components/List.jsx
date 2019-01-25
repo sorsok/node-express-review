@@ -1,14 +1,14 @@
-import React, { Component } from "react";
-import axios from "axios";
-import ListEntry from "./ListEntry.jsx";
+import React, { Component } from 'react';
+import axios from 'axios';
+import ListEntry from './ListEntry.jsx';
 
 class List extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      todo: "",
+      todo: '',
       todos: [],
-      listName: "Todos"
+      listName: 'Todos'
     };
     this.fetchTodos = this.fetchTodos.bind(this);
     this.handleInput = this.handleInput.bind(this);
@@ -18,7 +18,7 @@ class List extends Component {
 
   fetchTodos() {
     axios
-      .get("/api/todoList", { params: { listName: this.state.listName } })
+      .get('/api/todoList', { params: { listName: this.state.listName } })
       .then(({ data }) =>
         this.setState({ todos: data }, () => console.log(this.state))
       )
@@ -35,17 +35,23 @@ class List extends Component {
     e.preventDefault();
     const { todo, todos, listName } = this.state;
     axios
-      .post("/api/todoList", { todo, listName: this.state.listName })
+      .post('/api/todoList', { todo, listName: this.state.listName })
       .then(this.fetchTodos())
       .catch(err => console.log(err));
     e.target.reset();
   }
 
-  deleteTodo(todo) {
+  deleteTodo(index) {
     axios
-      .delete("/api/todoList", { params: { listName: this.state.listName } })
+      .delete('/api/todoList', {
+        params: { listName: this.state.listName, index }
+      })
       .then(this.fetchTodos())
       .catch(err => console.log(err));
+  }
+
+  componentDidMount() {
+    this.fetchTodos();
   }
 
   render() {
